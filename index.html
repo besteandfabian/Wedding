@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="only light">
 <title>Fabian &amp; Beste — Düğün · Hochzeit</title>
 <meta name="description" content="Wir heiraten! Evleniyoruz! Alle Infos & RSVP.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,7 +14,7 @@
    EDIT ME — everything you'll want to change is right here
    (plus the CONFIG block in the <script> at the bottom)
    ============================================================ */
-:root{
+:root{color-scheme:only light;
   --olive-deep:#3a4527;      /* zeytin — headings, footer */
   --olive-soft:#8a9270;      /* yaprak — accents, dividers */
   --stone:#f1efe7;           /* taş — page background */
@@ -37,6 +38,9 @@ body{
   line-height:1.65;
   font-size:17px;
   -webkit-font-smoothing:antialiased;
+}
+@media (prefers-color-scheme: dark){
+  body{background:var(--stone);color:var(--ink)}
 }
 
 /* ---------- language toggle ---------- */
@@ -175,6 +179,7 @@ h2{
 }
 .schedule .what strong{display:block;font-weight:700;font-size:1.02rem}
 .schedule .what span{color:var(--ink);opacity:.75;font-size:.95rem}
+.schedule-note{text-align:center;margin-top:20px;font-family:var(--display);font-style:italic;color:var(--olive-deep);opacity:.85;font-size:1.05rem}
 
 /* travel cards */
 .cards{margin-top:44px;display:grid;gap:18px}
@@ -277,7 +282,7 @@ footer .tagline{margin-top:10px;font-size:.9rem;opacity:.7;letter-spacing:.06em}
     </svg>
     <p class="eyebrow" data-i18n="eyebrow">Wir heiraten</p>
     <p class="date" id="wedding-date">Samstag, 21. August 2027</p>
-    <p class="place" id="wedding-place">Ayvalık · Balıkesir</p>
+    <p class="place" id="wedding-place">Karina Zeytinlik · Ayvalık</p>
     <p class="countdown" id="countdown" aria-live="off"></p>
     <a class="cta" href="#rsvp" data-i18n="cta">RSVP</a>
     <svg class="hero-hills" viewBox="0 0 600 140" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -315,6 +320,7 @@ footer .tagline{margin-top:10px;font-size:.9rem;opacity:.7;letter-spacing:.06em}
     <p class="section-label" data-i18n="schedule_label">Der Tag</p>
     <h2 data-i18n="schedule_title">Ablauf</h2>
     <div class="schedule" id="schedule"><!-- rows injected from CONFIG --></div>
+    <p class="schedule-note" data-i18n="schedule_note">Der genaue Ablauf folgt — schaut später noch einmal vorbei.</p>
   </div>
 </section>
 
@@ -324,6 +330,11 @@ footer .tagline{margin-top:10px;font-size:.9rem;opacity:.7;letter-spacing:.06em}
     <p class="section-label" data-i18n="travel_label">Anreise &amp; Übernachten</p>
     <h2 data-i18n="travel_title">So kommt ihr hin</h2>
     <div class="cards">
+      <div class="card wide">
+        <h3 data-i18n="venue_title">📍 Die Location</h3>
+        <p data-i18n="venue_text">Wir feiern im <strong>Karina Zeytinlik</strong> — einem Olivenhain in Küçükköy bei Ayvalık.</p>
+        <p>Tellikavak Caddesi, 35. Sokak No:46, Küçükköy — Ayvalık / Balıkesir · <a href="https://maps.google.com/?q=Karina+Zeytinlik+K%C3%BC%C3%A7%C3%BCkk%C3%B6y+Ayval%C4%B1k" target="_blank" rel="noopener" data-i18n="venue_maps">In Google Maps öffnen</a></p>
+      </div>
       <div class="card">
         <h3 data-i18n="fly_title">✈ Anreise</h3>
         <p data-i18n="fly_text">Der nächste Flughafen ist Balıkesir Koca Seyit / Edremit (EDO, ca. 45 Min.) — es gibt einige wenige Direktflüge dorthin. Die meisten Verbindungen aus Deutschland gehen nach Izmir (ADB, ca. 2 Std. Fahrt).</p>
@@ -374,7 +385,7 @@ footer .tagline{margin-top:10px;font-size:.9rem;opacity:.7;letter-spacing:.06em}
 const CONFIG = {
   nameA: "Fabian",
   nameB: "Beste",
-  place: "Ayvalık · Balıkesir",
+  place: "Karina Zeytinlik · Ayvalık",
   dateText: {                               // shown in the hero panel
     de: "Samstag, 21. August 2027",
     tr: "21 Ağustos 2027, Cumartesi",
@@ -389,10 +400,8 @@ const CONFIG = {
   // land directly in your "Wedding Hub — Ayvalık" base.
   airtableFormUrl: "https://airtable.com/appddEzHedvtdstz0/shrNbqRYblcG5jy1s",
   schedule: [
-    { time:"15:00", key:"sch_ceremony" },
-    { time:"16:30", key:"sch_drinks"  },
-    { time:"19:00", key:"sch_dinner"  },
-    { time:"22:00", key:"sch_party"   }
+    { time:"18:00", key:"sch_start" },
+    { time:"02:00", key:"sch_end"   }
   ]
 };
 
@@ -406,10 +415,12 @@ const I18N = {
     welcome_title:"Zwei Familien, zwei Sprachen, ein Fest",
     welcome_text:"Wir feiern unsere Hochzeit zwischen Olivenbäumen an der türkischen Ägäis — und wir wünschen uns nichts mehr, als euch alle dabei zu haben. Auf dieser Seite findet ihr alles Wichtige: Ablauf, Anreise, Unterkünfte und die Zusage.",
     schedule_label:"Der Tag", schedule_title:"Ablauf",
-    sch_ceremony:["Trauung","unter freiem Himmel"],
-    sch_drinks:["Empfang","Aperitif im Olivenhain"],
-    sch_dinner:["Abendessen","türkische & deutsche Küche"],
-    sch_party:["Party","bis in die Nacht"],
+    sch_start:["Los geht's","Empfang im Olivenhain — Karina Zeytinlik"],
+    sch_end:["Ausklang","wir feiern bis in die Nacht"],
+    schedule_note:"Der genaue Ablauf folgt — schaut später noch einmal vorbei.",
+    venue_title:"📍 Die Location",
+    venue_text:"Wir feiern im <strong>Karina Zeytinlik</strong> — einem Olivenhain in Küçükköy bei Ayvalık.",
+    venue_maps:"In Google Maps öffnen",
     travel_label:"Anreise & Übernachten", travel_title:"So kommt ihr hin",
     fly_title:"✈ Anreise",
     fly_text:"Der nächste Flughafen ist Balıkesir Koca Seyit / Edremit (EDO, ca. 45 Min.) — es gibt einige wenige Direktflüge dorthin. Die meisten Verbindungen aus Deutschland gehen nach Izmir (ADB, ca. 2 Std. Fahrt).",
@@ -432,10 +443,12 @@ const I18N = {
     welcome_title:"İki aile, iki dil, tek düğün",
     welcome_text:"Düğünümüzü Ege'de, zeytin ağaçlarının arasında kutluyoruz — ve en büyük dileğimiz hepinizin yanımızda olması. Bu sayfada program, ulaşım, konaklama ve LCV ile ilgili her şeyi bulabilirsiniz.",
     schedule_label:"Düğün günü", schedule_title:"Program",
-    sch_ceremony:["Nikâh","açık havada"],
-    sch_drinks:["Karşılama","zeytinlikte aperitif"],
-    sch_dinner:["Akşam yemeği","Türk ve Alman mutfağı"],
-    sch_party:["Eğlence","gece boyunca"],
+    sch_start:["Başlıyoruz","zeytinlikte karşılama — Karina Zeytinlik"],
+    sch_end:["Kapanış","gece boyunca eğleniyoruz"],
+    schedule_note:"Ayrıntılı program daha sonra paylaşılacak.",
+    venue_title:"📍 Mekân",
+    venue_text:"Düğünümüzü <strong>Karina Zeytinlik</strong>'te kutluyoruz — Ayvalık Küçükköy'de bir zeytinlik.",
+    venue_maps:"Google Haritalar'da aç",
     travel_label:"Ulaşım & Konaklama", travel_title:"Nasıl gelirsiniz",
     fly_title:"✈ Ulaşım",
     fly_text:"En yakın havalimanı Balıkesir Koca Seyit / Edremit (EDO, yakl. 45 dk) — oraya az sayıda direkt uçuş var. Almanya'dan çoğu bağlantı İzmir'e (ADB, yakl. 2 saat araba yolu).",
@@ -458,10 +471,12 @@ const I18N = {
     welcome_title:"Two families, two languages, one celebration",
     welcome_text:"We're celebrating our wedding among the olive trees on Turkey's Aegean coast — and nothing would make us happier than having you all there. On this page you'll find everything you need: schedule, travel, places to stay, and the RSVP.",
     schedule_label:"The day", schedule_title:"Schedule",
-    sch_ceremony:["Ceremony","in the open air"],
-    sch_drinks:["Reception","aperitif in the olive grove"],
-    sch_dinner:["Dinner","Turkish & German cuisine"],
-    sch_party:["Party","late into the night"],
+    sch_start:["It begins","reception in the olive grove — Karina Zeytinlik"],
+    sch_end:["Last dance","we celebrate late into the night"],
+    schedule_note:"The detailed schedule will follow — check back later.",
+    venue_title:"📍 The venue",
+    venue_text:"We're celebrating at <strong>Karina Zeytinlik</strong> — an olive grove in Küçükköy near Ayvalık.",
+    venue_maps:"Open in Google Maps",
     travel_label:"Travel & Stay", travel_title:"Getting there",
     fly_title:"✈ Getting there",
     fly_text:"The nearest airport is Balıkesir Koca Seyit / Edremit (EDO, approx. 45 min) — there are a few direct flights there. Most connections from Germany go to Izmir (ADB, approx. 2 hrs by car).",
@@ -518,7 +533,8 @@ function render(){
   const placeholder = document.getElementById("rsvp-placeholder");
   const fallback = document.querySelector(".rsvp-fallback");
   const isSet = url && !url.startsWith("PASTE_");
-  const embedUrl = isSet ? url.replace("airtable.com/", "airtable.com/embed/") : "";
+  const shrId = isSet ? (url.match(/shr\w+/) || [""])[0] : "";
+  const embedUrl = shrId ? "https://airtable.com/embed/" + shrId : "";
   iframe.style.display = isSet ? "block" : "none";
   placeholder.style.display = isSet ? "none" : "block";
   if(fallback) fallback.style.display = isSet ? "" : "none";
