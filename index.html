@@ -201,13 +201,21 @@ h2{
 .rsvp .section-label{color:var(--olive-soft)}
 .rsvp h2{color:var(--stone)}
 .rsvp .lead{color:var(--stone);opacity:.9}
-.rsvp-frame{
-  margin-top:40px;background:var(--white);border-radius:18px;overflow:hidden;
-  box-shadow:0 10px 40px rgba(0,0,0,.22);
+.rsvp-actions{text-align:center;margin-top:44px}
+.rsvp-btn{
+  display:inline-block;background:var(--stone);color:var(--olive-deep);
+  font-size:15px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  padding:19px 52px;border-radius:999px;text-decoration:none;
+  box-shadow:0 8px 30px rgba(0,0,0,.25);
+  transition:transform .2s,box-shadow .2s;
 }
-.rsvp-frame iframe{display:block;width:100%;height:820px;border:none}
-.rsvp-fallback{text-align:center;margin-top:20px;font-size:.92rem;opacity:.85}
-.rsvp-fallback a{color:var(--stone);font-weight:700;text-underline-offset:3px}
+.rsvp-btn:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(0,0,0,.3)}
+.rsvp-btn:focus-visible{outline:3px solid var(--white);outline-offset:3px}
+.rsvp-hint{text-align:center;margin-top:16px;font-size:.9rem;opacity:.75}
+.rsvp-placeholder-note{
+  text-align:center;margin-top:36px;font-family:var(--display);
+  font-style:italic;font-size:1.15rem;opacity:.9;
+}
 .rsvp-deadline{
   text-align:center;margin-top:30px;font-family:var(--display);
   font-style:italic;font-size:1.15rem;
@@ -357,11 +365,11 @@ footer .tagline{margin-top:10px;font-size:.9rem;opacity:.7;letter-spacing:.06em}
     <p class="section-label">RSVP</p>
     <h2 data-i18n="rsvp_title">Seid ihr dabei?</h2>
     <p class="lead" data-i18n="rsvp_text">Bitte füllt das kurze Formular aus — pro Familie / Paar reicht eine Antwort.</p>
-    <div class="rsvp-frame">
-      <div id="rsvp-placeholder" data-i18n="rsvp_soon" style="display:none;padding:60px 30px;text-align:center;color:var(--olive-deep);font-family:var(--display);font-style:italic;font-size:1.2rem;">Das RSVP-Formular öffnet in Kürze — schaut bald wieder vorbei!</div>
-      <iframe id="rsvp-iframe" title="RSVP" loading="lazy" src="" style="display:none"></iframe>
+    <div class="rsvp-actions">
+      <p id="rsvp-placeholder" class="rsvp-placeholder-note" data-i18n="rsvp_soon" style="display:none">Das RSVP-Formular öffnet in Kürze — schaut bald wieder vorbei!</p>
+      <a id="rsvp-open" class="rsvp-btn" href="" target="_blank" rel="noopener" style="display:none" data-i18n="rsvp_button">Jetzt antworten</a>
+      <p id="rsvp-hint" class="rsvp-hint" style="display:none" data-i18n="rsvp_hint">Öffnet sich in einem neuen Tab — dauert keine Minute.</p>
     </div>
-    <p class="rsvp-fallback" data-i18n="rsvp_fallback">Formular lädt nicht? <a id="rsvp-link" href="" target="_blank" rel="noopener">Hier in neuem Tab öffnen</a></p>
     <p class="rsvp-deadline" id="rsvp-deadline"></p>
   </div>
 </section>
@@ -430,6 +438,8 @@ const I18N = {
     stay_title:"🏨 Unterkünfte",
     stay_text:"Eine Liste mit empfohlenen Hotels und Pensionen in der Nähe schicken wir euch nach der Zusage — es ist für jedes Budget etwas dabei. Wer Hilfe bei der Buchung braucht: einfach im Formular ankreuzen.",
     rsvp_title:"Seid ihr dabei?",
+    rsvp_button:"Jetzt antworten",
+    rsvp_hint:"Öffnet sich in einem neuen Tab — dauert keine Minute.",
     rsvp_text:"Bitte füllt das kurze Formular aus — pro Familie / Paar reicht eine Antwort.",
     rsvp_fallback:'Formular lädt nicht? <a id="rsvp-link" href="" target="_blank" rel="noopener">Hier in neuem Tab öffnen</a>',
     photo_caption:"Bis bald an der Ägäis",
@@ -458,6 +468,8 @@ const I18N = {
     stay_title:"🏨 Konaklama",
     stay_text:"Yakındaki önerilen otel ve pansiyonların listesini LCV sonrası göndereceğiz — her bütçeye uygun seçenekler var. Rezervasyon için yardım isterseniz formda işaretleyin.",
     rsvp_title:"Bizimle misiniz?",
+    rsvp_button:"Şimdi yanıtla",
+    rsvp_hint:"Yeni sekmede açılır — bir dakikanızı almaz.",
     rsvp_text:"Lütfen kısa formu doldurun — aile / çift başına bir yanıt yeterli.",
     rsvp_fallback:'Form yüklenmiyor mu? <a id="rsvp-link" href="" target="_blank" rel="noopener">Yeni sekmede açın</a>',
     photo_caption:"Ege'de görüşürüz",
@@ -486,6 +498,8 @@ const I18N = {
     stay_title:"🏨 Where to stay",
     stay_text:"We'll send a list of recommended hotels and guesthouses nearby after you RSVP — there's something for every budget. Need help booking? Just tick the box in the form.",
     rsvp_title:"Will you join us?",
+    rsvp_button:"Reply now",
+    rsvp_hint:"Opens in a new tab — takes less than a minute.",
     rsvp_text:"Please fill in the short form — one reply per family / couple is enough.",
     rsvp_fallback:'Form not loading? <a id="rsvp-link" href="" target="_blank" rel="noopener">Open in a new tab</a>',
     photo_caption:"See you on the Aegean",
@@ -527,20 +541,16 @@ function render(){
   // rsvp deadline
   const dl = CONFIG.rsvpDeadline[lang];
   document.getElementById("rsvp-deadline").textContent = dl ? (t.deadline_prefix + dl) : "";
-  // airtable form
+  // airtable form (opens in new tab — Airtable blocks embedding)
   const url = CONFIG.airtableFormUrl;
-  const iframe = document.getElementById("rsvp-iframe");
-  const placeholder = document.getElementById("rsvp-placeholder");
-  const fallback = document.querySelector(".rsvp-fallback");
   const isSet = url && !url.startsWith("PASTE_");
-  const shrId = isSet ? (url.match(/shr\w+/) || [""])[0] : "";
-  const embedUrl = shrId ? "https://airtable.com/embed/" + shrId : "";
-  iframe.style.display = isSet ? "block" : "none";
+  const btn = document.getElementById("rsvp-open");
+  const placeholder = document.getElementById("rsvp-placeholder");
+  const hint = document.getElementById("rsvp-hint");
+  btn.style.display = isSet ? "inline-block" : "none";
+  hint.style.display = isSet ? "block" : "none";
   placeholder.style.display = isSet ? "none" : "block";
-  if(fallback) fallback.style.display = isSet ? "" : "none";
-  if(isSet && iframe.src !== embedUrl) iframe.src = embedUrl;
-  const link = document.getElementById("rsvp-link");
-  if(link) link.href = isSet ? url : "#";
+  if(isSet) btn.href = url;
   // toggle buttons
   document.querySelectorAll(".lang-toggle button").forEach(b=>{
     b.setAttribute("aria-pressed", String(b.dataset.lang === lang));
